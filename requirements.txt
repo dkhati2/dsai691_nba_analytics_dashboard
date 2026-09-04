@@ -1,0 +1,7 @@
+nba_api>=1.4.1
+psycopg2-binary>=2.9
+sqlalchemy>=2.0
+pandas>=2.2
+python-dotenv>=1.0
+tenacity>=8.2
+pytest>=8.0
