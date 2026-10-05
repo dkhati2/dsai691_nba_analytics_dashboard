@@ -100,12 +100,13 @@ ORDER BY season;
 -- L2  WHO MOVED FIRST
 -- #####################################################################
 
--- Q7. Every team's 3PA share relative to the league average that season.
+-- Q7. The ten teams furthest above the league-average 3PA share in a season.
 --     Positive = shooting more threes than the league. AVG() OVER gives
---     the league average without a second query.
---     Chart: Pivot table (rows = team_name, columns = season,
---     value = vs_league_pct_points, conditional color), or Line filtered
---     to a few teams (Houston, Golden State, San Antonio, Memphis).
+--     the league average across all 30 teams before LIMIT keeps the top 10.
+--     Chart: Table, vs_league_pct_points colored blue (above 0) / red (below).
+--     Wired to the dashboard's Season filter: in Metabase the last lines read
+--     WHERE TRUE [[AND season = {{season}}]]  before ORDER BY (a Metabase
+--     optional clause; with no season picked it shows 2000-01's top 10).
 WITH team_rate AS (
     SELECT g.season,
            t.team_name,
@@ -120,11 +121,13 @@ SELECT season,
        ROUND(pct_shots_from_three
              - AVG(pct_shots_from_three) OVER (PARTITION BY season), 1) AS vs_league_pct_points
 FROM team_rate
-ORDER BY season, vs_league_pct_points DESC;
+ORDER BY season, vs_league_pct_points DESC
+LIMIT 10;
 
 
 -- Q8. The leaders: the three highest 3PA-share teams each season.
---     Chart: Table.
+--     Chart: Table. Wired to the dashboard's Season filter: in Metabase the
+--     WHERE line reads  WHERE season_rank <= 3 [[AND season = {{season}}]]
 WITH team_rate AS (
     SELECT g.season,
            t.team_name,
