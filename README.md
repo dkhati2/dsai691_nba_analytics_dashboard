@@ -61,6 +61,75 @@ pip install -r requirements.txt
 Configure a local PostgreSQL instance and set connection details in `.env`
 (see `.env.example`).
 
+## Phase 3 hand-off (read this first)
+
+Phase 3 (due 9 Oct, 60 pts) is the dashboard phase: `dashboard_queries.sql`
+with every query behind a chart, plus a PDF of screenshots taken with
+Metabase's export/share feature. The rubric grades SQL variety (joins across
+real relationships, GROUP BY + aggregates, HAVING; window functions earn the
+top band), chart-to-query traceability, chart variety, and a single organized
+.sql file. It does not require any new data to be loaded.
+
+### 1. Get the Phase 2 database running (about 5 minutes)
+
+All passwords below are the local-only defaults in `docker-compose.yml` and
+`docker-compose.override.yml`; they are the same on every machine.
+
+```bash
+git clone https://github.com/dkhati2/dsai691_nba_analytics_dashboard.git
+cd dsai691_nba_analytics_dashboard
+docker compose up -d        # Postgres (host port 5433), Metabase :3000, pgAdmin :5050
+```
+
+**Load the data in pgAdmin** (http://localhost:5050, login `yash@usfca.edu` /
+`nba_local_pw`). Register a server: host `db`, port `5432`, user `postgres`,
+password `nba_local_pw`. Open `sql/create_and_load.sql`; run Part A on the
+`postgres` database, then Part B on `nba_three_point_revolution`. The last
+statement prints row counts: season 26, team 30, team_game 62,508,
+team_season 776, team_season_history 776, problem_games 0.
+
+**Connect Metabase** (http://localhost:3000). First visit creates your own
+admin account. Then Admin settings, Databases, Add database: PostgreSQL,
+host `db`, port `5432`, database `nba_three_point_revolution`, user `postgres`,
+password `nba_local_pw`. Host is `db`, not `localhost`, and port is `5432`,
+not `5433`: Metabase talks to Postgres inside the Docker network.
+
+### 2. What is loaded
+
+| Table | Rows | How |
+|---|---|---|
+| `season` | 26 | from `data/csv/season.csv` (committed) |
+| `team` | 30 | from `data/csv/team.csv` (committed) |
+| `team_game` | 62,508 | from `data/csv/team_game.csv` (committed); 2000-01 to 2025-26, one row per team per game |
+| `team_season` | 776 | derived in the script from `team_game` (3PA/game, 3P%) |
+| `team_season_history` | 776 | derived in the script from `team_game` (W, L, win%) |
+| `player`, `roster` | 0 | tables exist with keys; not loaded |
+
+Source for everything: `stats.nba.com` `LeagueGameLog` via `nba_api`, pulled by
+`ingestion/pull_gamelogs.py` and cleaned by `cleaning/export_csv.py` (cleaning
+decisions are in that file's docstring). To regenerate: `python -m
+ingestion.pull_gamelogs` (slow, caches to gitignored `data/raw/`), then
+`python3 -m cleaning.export_csv`.
+
+### 3. Where to start on the queries
+
+Part C of `sql/create_and_load.sql` has seven working queries (league curve,
+era comparison, per-season RANK() window function, CORR() against win%, best
+records, home-court, data quality) that join `team_game`, `season`, `team`,
+`team_season` and `team_season_history`. They cover story layers 1 to 3 from
+the Phase 1 plan and are a direct starting point for `dashboard_queries.sql`.
+`sql/queries/layer1..3` has three more.
+
+### 4. Optional, only if someone wants layer 4
+
+`player` and `roster` are empty, so `sql/queries/layer4_roster_composition/`
+returns nothing. Filling them means two new ingestion scripts
+(`CommonPlayerInfo`, `CommonTeamRoster`; about 776 API calls at 1/sec).
+`team_season.off_rating`, `def_rating`, `pace` are NULL (`LeagueDashTeamStats`).
+`team.city` is blank and relocated franchises carry their current name in old
+seasons (Seattle 2003-04 shows as Oklahoma City). None of this is required by
+the Phase 3 rubric.
+
 ## Pipeline
 
 1. **Ingest** — `python ingestion/pull_gamelogs.py` (and similar scripts per

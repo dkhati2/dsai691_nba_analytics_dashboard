@@ -29,3 +29,5 @@ data/staging/*
 
 # Dashboard exports that may contain local connection info
 dashboard/*.local.*
+
+# data/csv/ IS committed: it is the Phase 2 load input (regenerate with python3 -m cleaning.export_csv)
