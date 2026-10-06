@@ -21,4 +21,4 @@ loaded yet.
 | [`SETUP.md`](SETUP.md) | Step-by-step guide from a fresh clone to the finished dashboard, plus how to export screenshots |
 | [`build_dashboard.py`](build_dashboard.py) | Rebuilds the whole dashboard through Metabase's API (Python standard library only) |
 | [`dashboard_spec.json`](dashboard_spec.json) | Chart types, settings, layout, story text and descriptions the script uses |
-| [`../sql/dashboard_queries.sql`](../sql/dashboard_queries.sql) | The SQL behind every chart, labeled Q1–Q15 to match the chart titles |
+| [`../sql/dashboard_queries.sql`](../sql/dashboard_queries.sql) | The SQL behind every chart, labeled Q1–Q15 (the `query` field in the spec) |

@@ -158,8 +158,9 @@ rather than only clicking in Metabase:
 - **To change a query**, edit `sql/dashboard_queries.sql`. Each query starts
   with a `-- Qn.` header line, and the script splits the file on those lines.
 - **To change a chart type, its settings, its position or its story text**,
-  edit `dashboard/dashboard_spec.json`. Card names must keep their `Qn`
-  prefix, because that's how a card is matched to its query. `col`/`row`/`w`/`h`
+  edit `dashboard/dashboard_spec.json`. Each card's `query`
+  field (`"Q7"`, `"Q1a"`, ...) is how it is matched to its query; the `name`
+  is the title shown on the dashboard. `col`/`row`/`w`/`h`
   are positions on Metabase's 24-column grid. Entries with `"text"` are the
   story paragraphs (Markdown), and entries with `"heading"` are section titles.
 - **Q7 and Q8 get an optional Metabase clause**, `[[AND season = {{season}}]]`,

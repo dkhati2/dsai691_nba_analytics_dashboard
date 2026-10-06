@@ -116,7 +116,7 @@ def build(args):
         if "heading" in item or "text" in item:
             plan.append((item, None))
             continue
-        key = item["name"].split(" ")[0]            # "Q1a", "Q7", ...
+        key = item["query"]                          # "Q1a", "Q7", ...
         number = int(re.match(r"Q(\d+)", key).group(1))
         if number not in queries:
             sys.exit(f"{key} is in dashboard_spec.json but Q{number} is missing from {SQL_FILE.name}")

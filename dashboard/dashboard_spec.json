@@ -35,7 +35,7 @@
       "h": 2
     },
     {
-      "name": "Q1a · 3PA share in 2000-01 (%)",
+      "query": "Q1a", "name": "3PA share in 2000-01 (%)",
       "display": "scalar",
       "description": "The headline. In 2000-01, 17% of all shots were threes. In 2025-26 it was 41.5%, 2.4 times as many. The rest of this dashboard explains how the league got from the first number to the second.",
       "viz": {
@@ -53,7 +53,7 @@
       "filter": false
     },
     {
-      "name": "Q1b · 3PA share in 2025-26 (%)",
+      "query": "Q1b", "name": "3PA share in 2025-26 (%)",
       "display": "scalar",
       "description": "The headline. In 2000-01, 17% of all shots were threes. In 2025-26 it was 41.5%, 2.4 times as many. The rest of this dashboard explains how the league got from the first number to the second.",
       "viz": {
@@ -71,7 +71,7 @@
       "filter": false
     },
     {
-      "name": "Q1c · How many times larger",
+      "query": "Q1c", "name": "How many times larger",
       "display": "scalar",
       "description": "The headline. In 2000-01, 17% of all shots were threes. In 2025-26 it was 41.5%, 2.4 times as many. The rest of this dashboard explains how the league got from the first number to the second.",
       "viz": {
@@ -96,7 +96,7 @@
       "h": 2
     },
     {
-      "name": "Q2 · Share of shots taken from three, by season",
+      "query": "Q2", "name": "Share of shots taken from three, by season",
       "display": "line",
       "description": "A slow drift, then a surge. The share of shots taken from three crept from 17% to 22% by 2008-09, then stalled for three seasons. From 2012-13 it rose every year, reaching 38.4% in 2019-20, and has stayed around 40% since. The second line (right axis) is threes attempted per team per game.",
       "viz": {
@@ -136,7 +136,7 @@
       "h": 3
     },
     {
-      "name": "Q3 · Where the points come from (% of points)",
+      "query": "Q3", "name": "Where the points come from (% of points)",
       "display": "area",
       "description": "Where the points come from. Threes went from 15% of all points scored to about 35%, while twos fell from 65% to under 50%. 2024-25 was the first season in which less than half of the league's points came from two-point baskets.",
       "viz": {
@@ -158,7 +158,7 @@
       "filter": false
     },
     {
-      "name": "Q4 · Inflection point: season-over-season change in 3PA share",
+      "query": "Q4", "name": "Inflection point: season-over-season change in 3PA share",
       "display": "bar",
       "description": "Finding the inflection point. Each bar is how much the three-point share rose over the season before. Through 2011-12 the bars are small or flat. The big jumps cluster from 2012-13 to 2019-20, peaking at +3.1 percentage points in 2016-17. That stretch is the revolution itself.",
       "viz": {
@@ -192,7 +192,7 @@
       "h": 4
     },
     {
-      "name": "Q5 · Volume exploded, accuracy flat: 3PA share vs shooting % by era",
+      "query": "Q5", "name": "Volume exploded, accuracy flat: 3PA share vs shooting % by era",
       "display": "bar",
       "description": "More threes, not better shooters. Between the first and last eras, the share of shots from three nearly doubled (19.8% to 37.2%), but three-point accuracy barely moved (35.7% to 35.9%). Two-point accuracy rose (47.2% to 52.6%), which fits teams giving up long, low-percentage twos.",
       "viz": {
@@ -213,7 +213,7 @@
       "filter": false
     },
     {
-      "name": "Q6 · Points per game and effective FG% by season",
+      "query": "Q6", "name": "Points per game and effective FG% by season",
       "display": "line",
       "description": "Offense got better, too. Points per team per game rose from 94.8 to 115.6. Effective field-goal percentage, which counts a made three as 1.5 made shots, rose from 47.3% to 54.6%. The game didn't just change shape; scoring became more efficient alongside the shift.",
       "viz": {
@@ -259,7 +259,7 @@
       "h": 2
     },
     {
-      "name": "Q9 · Adoption year: first season at 35%+ of shots from three",
+      "query": "Q9", "name": "Adoption year: first season at 35%+ of shots from three",
       "display": "bar",
       "description": "Adoption year. The first season each franchise took at least 35% of its shots from three. Orlando got there first (2009-10), then New York (2012-13) and Houston (2014-15). 19 of the 30 franchises crossed the line between 2017-18 and 2019-20. San Antonio was last, in 2023-24.",
       "viz": {
@@ -301,7 +301,7 @@
       "h": 4
     },
     {
-      "name": "Q10 · Acceleration-era leaders: seasons in the top five by 3PA share",
+      "query": "Q10", "name": "Acceleration-era leaders: seasons in the top five by 3PA share",
       "display": "bar",
       "description": "Leaders during the acceleration era (2009-10 to 2014-15). Houston and New York ranked in the league's top five for three-point share in five of those six seasons. Atlanta, Orlando and Phoenix did it three times. The chart shows only franchises with at least two top-five seasons.",
       "viz": {
@@ -321,7 +321,7 @@
       "filter": false
     },
     {
-      "name": "Q8 · Top three 3PA-share teams each season",
+      "query": "Q8", "name": "Top three 3PA-share teams each season",
       "display": "table",
       "description": "The league leader, season by season. Boston led early (33.1% in 2002-03), Phoenix in the mid-2000s, and Orlando from 2007-08 to 2011-12. Houston took over in 2013-14, led seven straight seasons and passed 50% in 2017-18. Use the Season filter at the top to pick one season.",
       "viz": {},
@@ -339,7 +339,7 @@
       "h": 3
     },
     {
-      "name": "Q7 · Top 10 teams vs the league-average 3PA share, by season",
+      "query": "Q7", "name": "Top 10 teams vs the league-average 3PA share, by season",
       "display": "table",
       "description": "The ten biggest three-point outliers in a season. For the season picked in the Season filter, the ten teams that took the most of their shots from three relative to that season's league average (in percentage points). With no season picked, it shows 2000-01. The biggest outlier in all 26 seasons is 2017-18 Houston, 16.5 points above the league. (Team names are current: 2003-04 \"Oklahoma City\" is the Seattle SuperSonics.)",
       "viz": {
@@ -394,7 +394,7 @@
       "h": 3
     },
     {
-      "name": "Q11 · Every team-season: 3PA share vs win %",
+      "query": "Q11", "name": "Every team-season: 3PA share vs win %",
       "display": "scatter",
       "description": "All 776 team-seasons. Each dot is one team in one season, colored by era. The whole cloud slides right over time: teams took 10–34% of their shots from three before 2009-10, and 19–54% from 2015-16 on. But in every era, win percentage covers the full range. Volume alone doesn't decide who wins.",
       "viz": {
@@ -429,7 +429,7 @@
       "h": 5
     },
     {
-      "name": "Q12 · Correlation with win %: three-point volume vs accuracy",
+      "query": "Q12", "name": "Correlation with win %: three-point volume vs accuracy",
       "display": "line",
       "description": "Accuracy matters more than volume. How closely win % tracks three-point attempts per game vs three-point percentage, each season (1 = in step, 0 = no link). Accuracy is the stronger link in all but one season, usually 0.4 to 0.8. Since 2019-20, volume's link has mostly stayed below 0.15: when everyone shoots threes, shooting more stops setting teams apart.",
       "viz": {
@@ -450,7 +450,7 @@
       "filter": false
     },
     {
-      "name": "Q14 · Win % for the team that makes more threes",
+      "query": "Q14", "name": "Win % for the team that makes more threes",
       "display": "line",
       "description": "Win the three-point battle, win the game. How often the team that makes more threes in a game wins it. About 62% in 2000-01, and 65–68% in most seasons since 2016-17. As threes became a bigger share of scoring, winning that matchup became more decisive.",
       "viz": {
@@ -484,7 +484,7 @@
       "h": 4
     },
     {
-      "name": "Q13 · Did moving early pay off? Win % the next season",
+      "query": "Q13", "name": "Did moving early pay off? Win % the next season",
       "display": "bar",
       "description": "Did moving early pay off? Teams above the league-average three-point share won 52–54% of their games the following season. Teams below it won 46–48%. The gap was widest during the acceleration era (54.3% vs 46.0%), when being ahead of the trend was still rare. The advantage held two seasons out as well.",
       "viz": {
@@ -505,7 +505,7 @@
       "filter": false
     },
     {
-      "name": "Q15 · Best records since 2015-16 and their three-point profile",
+      "query": "Q15", "name": "Best records since 2015-16 and their three-point profile",
       "display": "table",
       "description": "The best records since 2015-16. The 73-9 Warriors of 2015-16 led the league in three-point attempts. But 67-15 San Antonio (2015-16) and 64-18 Phoenix (2021-22) ranked 26th. Great teams shoot threes well; they don't all shoot the most.",
       "viz": {},
@@ -516,7 +516,7 @@
       "filter": false
     },
     {
-      "text": "**The answer.** The NBA moved from an inside game to an outside game in about eight seasons, from 2012-13 to 2019-20. A handful of franchises moved first: Orlando, New York and Houston. Teams ahead of the curve did win more, in the same season and the two after it. But the strongest link to winning is making threes, not just taking them.\n\n*Next: who changed. Layer 4 looks at roster position and body type, once the player and roster tables are loaded.*",
+      "text": "**The answer.** The NBA moved from an inside game to an outside game in about eight seasons, from 2012-13 to 2019-20. A handful of franchises moved first: Orlando, New York and Houston. Teams ahead of the curve did win more, in the same season and the two after it. But the strongest link to winning is making threes, not just taking them.",
       "col": 0,
       "row": 110,
       "w": 24,
