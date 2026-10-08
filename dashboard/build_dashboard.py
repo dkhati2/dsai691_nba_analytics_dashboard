@@ -49,7 +49,7 @@ SEASON_TAG = {
 
 
 def parse_queries(text):
-    """Return {query number: SQL} from dashboard_queries.sql (comments dropped)."""
+    """Return {query number: SQL} from sql/dashboard_queries.sql (comments dropped)."""
     queries = {}
     for block in re.split(r"\n(?=-- Q\d+\.)", text)[1:]:
         number = int(re.match(r"-- Q(\d+)\.", block).group(1))
@@ -108,7 +108,6 @@ def find_database(mb, connect):
 def build(args):
     spec = json.loads(SPEC_FILE.read_text())
     queries = parse_queries(SQL_FILE.read_text())
-    filtered = spec["season_filter"]
 
     # Resolve each card's SQL first so a broken spec fails before any writes.
     plan = []
@@ -121,11 +120,8 @@ def build(args):
         if number not in queries:
             sys.exit(f"{key} is in dashboard_spec.json but Q{number} is missing from {SQL_FILE.name}")
         sql = queries[number]
-        if item.get("filter"):
-            rule = filtered[f"Q{number}"]
-            if rule["find"] not in sql:
-                sys.exit(f"Q{number} changed in {SQL_FILE.name}; update season_filter in dashboard_spec.json")
-            sql = sql.replace(rule["find"], rule["replace"])
+        if item.get("filter") and "{{season}}" not in sql:
+            sys.exit(f"Q{number} is wired to the Season filter but has no {{{{season}}}} clause in {SQL_FILE.name}")
         plan.append((item, sql))
 
     cards = sum(1 for _, sql in plan if sql)

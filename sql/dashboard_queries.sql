@@ -7,13 +7,20 @@
 --    query, run it, click Visualization, pick the chart type named in the
 --    query's header, then Save and add it to the dashboard
 --    "NBA Three Point Revolution". One query = one card.
+--
+--  RUNNING IN PGADMIN
+--    Every query runs as-is except Q7 and Q8, which contain Metabase's
+--    optional-filter syntax [[ ... {{season}} ... ]] exactly as the
+--    dashboard cards use it. To run either in pgAdmin, delete the text
+--    from [[ to ]] on the line marked "Metabase filter"; the query then
+--    returns every season.
 
 -- #####################################################################
 -- L1  THE LEAGUE CURVE
 -- #####################################################################
 
 -- Q1. Headline numbers: 3PA share, first season vs latest season.
---     Chart: three Number cards (one per column), or a single Table.
+--     Chart: three Number cards (one per column).
 WITH by_season AS (
     SELECT season,
            100.0 * SUM(fg3a) / SUM(fga) AS pct_shots_from_three
@@ -30,8 +37,9 @@ WHERE f.season = (SELECT MIN(season) FROM by_season)
 
 
 -- Q2. The headline curve: share of shots taken from three, by season.
---     Chart: Line. X = season, Y = pct_shots_from_three (series by era_label
---     optional). Add threes_per_team_game as a second line on the right axis.
+--     Chart: Line. X = season. Left axis = pct_shots_from_three, titled
+--     "% of shots from three". Right axis = threes_per_team_game, titled
+--     "3PA per team game".
 SELECT s.season,
        s.era_label,
        ROUND(100.0 * SUM(g.fg3a) / SUM(g.fga), 1) AS pct_shots_from_three,
@@ -44,7 +52,8 @@ ORDER BY s.season;
 
 -- Q3. Where the points come from: share of points scored on twos,
 --     threes and free throws, by season.
---     Chart: Stacked area (or 100% stacked bar). X = season.
+--     Chart: Stacked area. X = season. Y axis max = 100 (the three
+--     shares sum to 100%).
 SELECT season,
        ROUND(100.0 * SUM(2 * (fgm - fg3m)) / SUM(points), 1) AS pct_points_from_twos,
        ROUND(100.0 * SUM(3 * fg3m)         / SUM(points), 1) AS pct_points_from_threes,
@@ -72,7 +81,8 @@ ORDER BY season;
 
 
 -- Q5. Volume exploded, accuracy barely moved: 3PA share vs 3P% by era.
---     Chart: Bar (grouped). X = era_label, Y = both percentage columns.
+--     Chart: Bar (grouped). X = era_label, Y = the three percentage
+--     columns, ALL ON ONE AXIS (0 to 60), so bar heights compare directly.
 SELECT s.era_label,
        MIN(s.season) || ' to ' || MAX(s.season)    AS seasons,
        ROUND(100.0 * SUM(g.fg3a) / SUM(g.fga), 1)  AS pct_shots_from_three,
@@ -101,12 +111,12 @@ ORDER BY season;
 -- #####################################################################
 
 -- Q7. The ten teams furthest above the league-average 3PA share in a season.
---     Positive = shooting more threes than the league. AVG() OVER gives
---     the league average across all 30 teams before LIMIT keeps the top 10.
+--     Positive = shooting more threes than the league. The WHERE filter
+--     runs before the window function, so AVG() OVER still averages all
+--     teams in the chosen season before LIMIT keeps the top 10.
 --     Chart: Table, vs_league_pct_points colored blue (above 0) / red (below).
---     Wired to the dashboard's Season filter: in Metabase the last lines read
---     WHERE TRUE [[AND season = {{season}}]]  before ORDER BY (a Metabase
---     optional clause; with no season picked it shows 2000-01's top 10).
+--     Wired to the dashboard's Season filter. With no season picked it
+--     shows 2000-01's top 10.
 WITH team_rate AS (
     SELECT g.season,
            t.team_name,
@@ -121,13 +131,13 @@ SELECT season,
        ROUND(pct_shots_from_three
              - AVG(pct_shots_from_three) OVER (PARTITION BY season), 1) AS vs_league_pct_points
 FROM team_rate
+WHERE TRUE [[AND season = {{season}}]]   -- Metabase filter
 ORDER BY season, vs_league_pct_points DESC
 LIMIT 10;
 
 
 -- Q8. The leaders: the three highest 3PA-share teams each season.
---     Chart: Table. Wired to the dashboard's Season filter: in Metabase the
---     WHERE line reads  WHERE season_rank <= 3 [[AND season = {{season}}]]
+--     Chart: Table. Wired to the dashboard's Season filter.
 WITH team_rate AS (
     SELECT g.season,
            t.team_name,
@@ -140,15 +150,15 @@ WITH team_rate AS (
 )
 SELECT season, season_rank, team_name, pct_shots_from_three
 FROM team_rate
-WHERE season_rank <= 3
+WHERE season_rank <= 3 [[AND season = {{season}}]]   -- Metabase filter
 ORDER BY season, season_rank;
 
 
 -- Q9. Adoption year: the first season each franchise took at least 35% of
 --     its shots from three (a level no team reached before 2009-10).
 --     Earlier year = earlier adopter.
---     Chart: Row (horizontal bar). X = team_name, Y = first_season_start_year,
---     sorted ascending.
+--     Chart: Bar. X = team_name, Y = first_season_start_year, sorted
+--     ascending.
 WITH team_rate AS (
     SELECT g.team_id,
            s.season,
@@ -179,7 +189,8 @@ ORDER BY f.season_start_year, t.team_name;
 -- Q10. Who led during the acceleration era (2009-10 to 2014-15)? Number of
 --      seasons each franchise ranked in the league's top five by 3PA share,
 --      keeping only franchises that did it more than once (HAVING).
---      Chart: Bar. X = team_name, Y = top5_seasons.
+--      Chart: Bar. X = team_name, Y = top5_seasons, Y axis titled
+--      "Seasons in top 5".
 WITH team_rank AS (
     SELECT g.team_id,
            g.season,
@@ -205,6 +216,11 @@ ORDER BY top5_seasons DESC, t.team_name;
 -- #####################################################################
 
 -- Q11. Every team-season: 3PA share vs win percentage, colored by era.
+--      No row inflation: team_season_history (h), team (t) and season (s)
+--      each contribute exactly one row per team-season, so joining them to
+--      team_game repeats those single values across that team-season's
+--      games. The only aggregates (SUM fg3a, SUM fga) come from team_game,
+--      and win_pct is a GROUP BY column, not summed.
 --      Chart: Scatter. X = pct_shots_from_three, Y = win_pct,
 --      series = era_label.
 SELECT t.team_name,
@@ -238,8 +254,8 @@ ORDER BY h.season;
 --      followed into the same season, the next season and two seasons on
 --      (LEAD over each team's seasons). Covers seasons through 2023-24 so
 --      both follow-up seasons exist.
---      Chart: Bar (grouped). X = three_point_profile, Y = the three win %
---      columns. Or Line by season with series = three_point_profile.
+--      Chart: Bar (grouped). X = era_label, series = three_point_profile,
+--      Y = win_pct_next_season and win_pct_two_seasons_later.
 WITH team_rate AS (
     SELECT g.team_id,
            g.season,
@@ -260,7 +276,7 @@ profiled AS (
 )
 SELECT p.three_point_profile,
        s.era_label,
-       COUNT(*)                                  AS team_seasons,
+       COUNT(*)                             AS team_seasons,
        ROUND(100 * AVG(p.win_pct), 1)       AS win_pct_same_season,
        ROUND(100 * AVG(p.win_pct_next), 1)  AS win_pct_next_season,
        ROUND(100 * AVG(p.win_pct_plus2), 1) AS win_pct_two_seasons_later
@@ -273,7 +289,9 @@ ORDER BY MIN(s.season_start_year), p.three_point_profile;
 
 -- Q14. Game level: how often does the team that makes more threes win?
 --      Each team_game row is joined to its opponent's row for the same
---      game (self-join on the shared game id, team_game_id / 100).
+--      game (self-join on the shared game id, team_game_id / 100). Every
+--      game has exactly two rows (create_and_load.sql checks this), so
+--      each row matches exactly one opponent row.
 --      Chart: Line. X = season, Y = win_pct_when_more_threes_made.
 WITH matchup AS (
     SELECT g.season,
@@ -296,6 +314,8 @@ ORDER BY season;
 
 
 -- Q15. Best records of the last decade next to their three-point profile.
+--      Sorted by the unrounded win share, so teams whose rounded win_pct
+--      ties (e.g. .732) are ordered correctly.
 --      Chart: Table (conditional formatting on win_pct and league_rank_3pa).
 WITH ranked AS (
     SELECT ts.team_id,
@@ -317,5 +337,5 @@ FROM team_season_history h
 JOIN team t   ON t.team_id = h.team_id
 JOIN ranked r ON r.team_id = h.team_id AND r.season = h.season
 WHERE h.season >= '2015-16'
-ORDER BY h.win_pct DESC
+ORDER BY h.wins::NUMERIC / (h.wins + h.losses) DESC, h.season
 LIMIT 15;

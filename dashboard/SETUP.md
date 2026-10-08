@@ -163,9 +163,10 @@ rather than only clicking in Metabase:
   is the title shown on the dashboard. `col`/`row`/`w`/`h`
   are positions on Metabase's 24-column grid. Entries with `"text"` are the
   story paragraphs (Markdown), and entries with `"heading"` are section titles.
-- **Q7 and Q8 get an optional Metabase clause**, `[[AND season = {{season}}]]`,
-  added by the `season_filter` rules in the spec. If you edit the lines those
-  rules look for, the script stops and tells you to update the rule.
+- **Q7 and Q8 carry an optional Metabase clause**, `[[AND season = {{season}}]]`,
+  in the SQL file itself (the line marked `-- Metabase filter`). Cards with
+  `"filter": true` in the spec are wired to the Season filter, and the script
+  stops if one of them has no `{{season}}` clause.
 
 Then rebuild with `--replace`.
 
